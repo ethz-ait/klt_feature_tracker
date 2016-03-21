@@ -42,9 +42,9 @@
 #include <cv_bridge/cv_bridge.h>
 
 #include "trackFeatures.h"
-#include "duo_vio/TrackFeatures.h"
+#include "klt_feature_tracker/TrackFeatures.h"
 
-bool track(duo_vio::TrackFeatures::Request &req, duo_vio::TrackFeatures::Response &res);
+bool track(klt_feature_tracker::TrackFeatures::Request &req, klt_feature_tracker::TrackFeatures::Response &res);
 
 int main(int argc, char *argv[])
 {
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 }
 
 
-bool track(duo_vio::TrackFeatures::Request &req, duo_vio::TrackFeatures::Response &res)
+bool track(klt_feature_tracker::TrackFeatures::Request &req, klt_feature_tracker::TrackFeatures::Response &res)
 {
     cv_bridge::CvImagePtr left_image;
     cv_bridge::CvImagePtr right_image;
