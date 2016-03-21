@@ -41,7 +41,6 @@
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 
-#include "Precision.h"
 #include "trackFeatures.h"
 #include "duo_vio/TrackFeatures.h"
 

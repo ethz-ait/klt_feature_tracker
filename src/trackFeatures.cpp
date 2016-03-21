@@ -64,59 +64,59 @@ bool compareMatch(const cv::DMatch &first, const cv::DMatch &second);
 bool compareKeypoints(const cv::KeyPoint &first, const cv::KeyPoint &second);
 
 // corners (z_all_l, z_all_r) and status are output variables
-void trackFeatures(const cv::Mat &img_l, const cv::Mat &img_r, std::vector<cv::Point2f> &z_all_l, std::vector<cv::Point2f> &z_all_r, std::vector<int> &updateVect,
+void trackFeatures(const cv::Mat &img_l, const cv::Mat &img_r, std::vector<cv::Point2f> &features_l, std::vector<cv::Point2f> &features_r, std::vector<int> &status,
         int stereo) {
     if (!img_l.data)
         throw "Left image is invalid";
     if (stereo && !img_r.data)
         throw "Right image is invalid";
 
-    unsigned int numPoints = updateVect.size();
-    z_all_l.resize(numPoints);
-    std::fill(z_all_l.begin(), z_all_l.end(), cv::Point2f(-100, -100));
+    unsigned int numPoints = status.size();
+    features_l.resize(numPoints);
+    std::fill(features_l.begin(), features_l.end(), cv::Point2f(-100, -100));
 
-    z_all_r.resize(numPoints);
-    std::fill(z_all_r.begin(), z_all_r.end(), cv::Point2f(-100, -100));
+    features_r.resize(numPoints);
+    std::fill(features_r.begin(), features_r.end(), cv::Point2f(-100, -100));
 
-    for (size_t i = 0; i < updateVect.size() && i < numPoints; ++i) {
-        if (updateVect[i] == 1) {
+    for (size_t i = 0; i < status.size() && i < numPoints; ++i) {
+        if (status[i] == 1) {
             prev_status[i] = 1;
         } else {
             prev_status[i] = 0;  // if updateVect[i] == 0 feature is inactive, == 2 request new feature
         }
     }
 
-    std::vector<unsigned char> status, status_right;
+    std::vector<unsigned char> status_left, status_right;
     std::vector<cv::Point2f> cur_corners, right_corners;
     std::vector<float> error;
 
     if (!prev_img.empty()) {
         if (!prev_corners.empty()) {
-            cv::calcOpticalFlowPyrLK(prev_img, img_l, prev_corners, cur_corners, status, error, cv::Size(9, 9), 3);
+            cv::calcOpticalFlowPyrLK(prev_img, img_l, prev_corners, cur_corners, status_left, error, cv::Size(9, 9), 3);
             prev_corners = cur_corners;
             if (stereo == 2)
                 cv::calcOpticalFlowPyrLK(img_l, img_r, prev_corners, right_corners, status_right, error, cv::Size(9, 9), 3);
 
             for (size_t i = 0; i < prev_corners.size() && i < numPoints; ++i) {
-                if (!(prev_status[i] && status[i] && (stereo != 2 || status_right[i])))
+                if (!(prev_status[i] && status_left[i] && (stereo != 2 || status_right[i])))
                     prev_status[i] = 0;
 
                 if (prev_status[i] == 1) {
                     if (prev_corners[i].x < 0 || prev_corners[i].x > img_l.cols || prev_corners[i].y < 0 || prev_corners[i].y > img_l.rows
                             || ((stereo == 2)
                                     && (right_corners[i].x < 0 || right_corners[i].x > img_l.cols || right_corners[i].y < 0 || right_corners[i].y > img_l.rows))) {
-                        updateVect[i] = 0;
+                        status[i] = 0;
                     } else {
-                        z_all_l[i] = prev_corners[i];
+                        features_l[i] = prev_corners[i];
 
                         if (stereo == 2) {
-                            z_all_r[i] = right_corners[i];
+                            features_r[i] = right_corners[i];
                         }
-                        updateVect[i] = 1;
+                        status[i] = 1;
                     }
                 } else {
-                    if (updateVect[i] == 1)  // be careful not to overwrite 2s in updateVect
-                        updateVect[i] = 0;
+                    if (status[i] == 1)  // be careful not to overwrite 2s in updateVect
+                        status[i] = 0;
                 }
             }
         }
@@ -125,7 +125,7 @@ void trackFeatures(const cv::Mat &img_l, const cv::Mat &img_r, std::vector<cv::P
     img_l.copyTo(prev_img);
 
     // initialize new points if needed
-    initMorePoints(img_l, img_r, updateVect, z_all_l, z_all_r, stereo);
+    initMorePoints(img_l, img_r, status, features_l, features_r, stereo);
 }
 
 // ==== local functions, hidden from outside this file ====
