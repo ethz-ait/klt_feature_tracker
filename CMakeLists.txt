@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(klt_feature_tracker)
 
 # check if this is being built as a ROS package
-if (CATKIN_DEVEL_PREFIX) 
+if (CATKIN_DEVEL_PREFIX)
     set(CATKIN_BUILD 1)
     message(STATUS "Building ${PROJECT_NAME} as a catkin package")
 else()
@@ -148,6 +148,11 @@ target_link_libraries(klt_feature_tracker
   ${OpenCV_LIBRARIES}
 )
 
+target_include_directories(klt_feature_tracker PUBLIC include)
+
+set(${PROJECT_NAME}_INCLUDE_DIRS
+    ${PROJECT_SOURCE_DIR}/include
+    CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
