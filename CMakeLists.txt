@@ -167,7 +167,7 @@ if(CATKIN_BUILD)
 
     ## Add cmake target dependencies of the executable
     ## same as for the library above
-    add_dependencies(feature_tracker_node ${PROJECT_NAME}_EXPORTED_TARGETS})
+    add_dependencies(feature_tracker_node klt_feature_tracker)
 
     ## Specify libraries to link a library or executable target against
     target_link_libraries(feature_tracker_node
