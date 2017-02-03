@@ -55,6 +55,9 @@ static std::vector<cv::Point2f> prev_corners;
 static std::vector<cv::Point2f> prev_corners_right;
 static std::vector<unsigned char> prev_status(100, 0);
 
+// for throttling debug messages
+static int debug_msg_count = 0;
+
 // local functions
 static void initMorePoints(const cv::Mat &img_l, const cv::Mat &img_r, std::vector<int> &updateVect, std::vector<cv::Point2f> &z_all_l,
         std::vector<cv::Point2f> &z_all_r, int stereo);
@@ -319,7 +322,10 @@ static void initMorePoints(const cv::Mat &img_l, const cv::Mat &img_r, std::vect
             return;
         }
         if (leftPoints.size() != rightPoints.size())  // debug
-            printf("Left and right points have different sizes: left %d, right %d\n", (int) leftPoints.size(), (int) rightPoints.size());
+            debug_msg_count ++;
+            if (debug_msg_count % 50 == 0) {
+                printf("Left and right points have different sizes: left %d, right %d\n", (int) leftPoints.size(), (int) rightPoints.size());
+            }
     } else {
         leftPoints.resize(goodKeypointsL.size());
         for (int i = 0; i < goodKeypointsL.size(); i++)
@@ -328,7 +334,10 @@ static void initMorePoints(const cv::Mat &img_l, const cv::Mat &img_r, std::vect
         }
     }
     if (leftPoints.size() < targetNumPoints)
-        printf("Number of good matches: %d, desired: %d\n", (int) leftPoints.size(), targetNumPoints);
+        debug_msg_count ++;
+        if (debug_msg_count % 50 == 0) {
+            printf("Number of good matches: %d, desired: %d\n", (int) leftPoints.size(), targetNumPoints);
+        }
 
     if (prev_corners.size() < updateVect.size())
         prev_corners.resize(updateVect.size());
@@ -395,3 +404,5 @@ bool compareMatch(const cv::DMatch &first, const cv::DMatch &second) {
 bool compareKeypoints(const cv::KeyPoint &first, const cv::KeyPoint &second) {
     return first.response > second.response;
 }
+
+/* vim: set et fenc=utf-8 ff=unix sts=0 sw=4 ts=4 : */
