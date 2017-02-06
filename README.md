@@ -30,7 +30,7 @@ The tracker interprets each entry of `status` as follows:
  - `status[i] = 1`: Feature `i` is active, track it according to `stereo`:
      - `stereo = 0` or `stereo = 1`: Track the feature over time in the left image.
      - `stereo = 2`: Track the feature over time in the left image, then track from left to right image.
-- `status[i] = 2`: Feature `i` is to be initialized according to `stereo`:
+ - `status[i] = 2`: Feature `i` is to be initialized according to `stereo`:
      - `stereo = 0`: Initialize a feature using only `img_l`.
      - `stereo = 1` or `stereo = 2`: Initialize a new feature and return left and right measurements.
 
