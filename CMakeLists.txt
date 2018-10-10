@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(klt_feature_tracker)
 
+unset(_CATKIN_CURRENT_PACKAGE)
+
 # check if this is being built as a ROS package
 if (CATKIN_DEVEL_PREFIX)
     set(CATKIN_BUILD 1)
