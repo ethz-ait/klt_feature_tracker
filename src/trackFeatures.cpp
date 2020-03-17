@@ -321,11 +321,12 @@ static void initMorePoints(const cv::Mat &img_l, const cv::Mat &img_r, std::vect
             }
             return;
         }
-        if (leftPoints.size() != rightPoints.size())  // debug
+        if (leftPoints.size() != rightPoints.size()) { // debug
             debug_msg_count ++;
             if (debug_msg_count % 50 == 0) {
                 printf("Left and right points have different sizes: left %d, right %d\n", (int) leftPoints.size(), (int) rightPoints.size());
             }
+        }
     } else {
         leftPoints.resize(goodKeypointsL.size());
         for (int i = 0; i < goodKeypointsL.size(); i++)
@@ -333,11 +334,12 @@ static void initMorePoints(const cv::Mat &img_l, const cv::Mat &img_r, std::vect
             leftPoints[i] = goodKeypointsL[i].pt;
         }
     }
-    if (leftPoints.size() < targetNumPoints)
+    if (leftPoints.size() < targetNumPoints) {
         debug_msg_count ++;
         if (debug_msg_count % 50 == 0) {
             printf("Number of good matches: %d, desired: %d\n", (int) leftPoints.size(), targetNumPoints);
         }
+    }
 
     if (prev_corners.size() < updateVect.size())
         prev_corners.resize(updateVect.size());
